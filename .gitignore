@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files (keep sample, ignore real data)
+*_data*.csv
+!sample_data.csv
+
+# Logs
+*.log

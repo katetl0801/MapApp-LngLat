@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demand Heatmap Tool</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="sidebar">
+        <h1>Demand Heatmap</h1>
+
+        <!-- ── DATA LOAD ── -->
+        <section class="card">
+            <h2>1. Load Data</h2>
+            <div class="filter-group">
+                <label>CSV File (p_lat, p_lng, Services, Order_hour, period):</label>
+                <input type="file" id="csvFileInput" accept=".csv">
+                <small>
+                    Required columns: <code>p_lat</code>, <code>p_lng</code>, <code>Services</code>,
+                    <code>Order_hour</code>, <code>period</code><br>
+                    <a href="sample_data.csv" download>Download sample CSV</a>
+                </small>
+            </div>
+            <div id="dataStatus" class="status-badge status-empty">No data loaded</div>
+        </section>
+
+        <!-- ── HEATMAP FILTERS ── -->
+        <section class="card">
+            <h2>2. Heatmap Filters</h2>
+            <div class="filter-group">
+                <label>Service Type:</label>
+                <select id="serviceFilter" multiple size="4">
+                    <option value="" disabled>Load a CSV first...</option>
+                </select>
+                <small>Hold Ctrl / Cmd to select multiple</small>
+            </div>
+
+            <div class="filter-group">
+                <label>Order Hour Range:</label>
+                <div class="row-inputs">
+                    <input type="number" id="minHour" min="0" max="23" value="0" placeholder="Min (>=)">
+                    <span class="separator">–</span>
+                    <input type="number" id="maxHour" min="0" max="23" value="23" placeholder="Max (<=)">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Date Range:</label>
+                <div class="row-inputs">
+                    <select id="startDate"><option>—</option></select>
+                    <span class="separator">–</span>
+                    <select id="endDate"><option>—</option></select>
+                </div>
+            </div>
+
+            <button id="applyFilters">Apply &amp; Generate Heatmap</button>
+            <div id="heatStatus" class="status-badge status-empty" style="margin-top:8px;"></div>
+        </section>
+
+        <!-- ── ZONE OVERLAY ── -->
+        <section class="card">
+            <h2>3. Zone Overlay</h2>
+            <div class="filter-group">
+                <label>Zone Name:</label>
+                <input type="text" id="zoneName" placeholder="e.g. Zone North">
+            </div>
+
+            <div class="filter-group">
+                <label>Coordinates <code>[lng, lat]</code> — paste any of 3 formats:</label>
+                <textarea id="coordsInput" rows="9"
+                    placeholder="// Format A — devtools array dump:&#10;[&#10;0:[&#10;0:105.90305&#10;1:20.98148&#10;]&#10;1:[&#10;0:105.90117&#10;1:20.99141&#10;]&#10;]&#10;&#10;// Format B — JSON array:&#10;[[105.90305,20.98148],[105.90117,20.99141]]&#10;&#10;// Format C — one lng,lat per line:&#10;105.90305,20.98148&#10;105.90117,20.99141"></textarea>
+                <small>
+                    All formats use <strong>longitude first, latitude second</strong> (GeoJSON / WGS-84).<br>
+                    Auto-detects: devtools dump · JSON array · plain <code>lng,lat</code> lines.
+                </small>
+            </div>
+
+            <div class="filter-group">
+                <label>Fill Opacity:</label>
+                <input type="range" id="fillOpacity" min="0" max="1" step="0.05" value="0.25">
+                <small id="opacityLabel">0.25</small>
+            </div>
+
+            <button id="createZoneBtn" class="btn-success">+ Create Zone</button>
+
+            <ul id="zoneList"></ul>
+        </section>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
