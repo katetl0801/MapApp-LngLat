@@ -33,7 +33,9 @@ const opacityLabel  = document.getElementById('opacityLabel');
 
 // ── OPACITY SLIDER ────────────────────────────────────────────────────────────
 fillOpacityEl.addEventListener('input', () => {
-    opacityLabel.textContent = fillOpacityEl.value;
+    const val = parseFloat(fillOpacityEl.value);
+    opacityLabel.textContent = val.toFixed(2) + (Object.keys(polygons).length ? ' — applied to all zones' : '');
+    Object.values(polygons).forEach(p => p.setStyle({ fillOpacity: val }));
 });
 
 // ── CSV LOAD ──────────────────────────────────────────────────────────────────
